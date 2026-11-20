@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Music</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 50px 20px;
+            background: #101010;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .song {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #1c1c1c;
+            border: 1px solid #292929;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .song:hover {
+            background: #262626;
+            border-color: #a3e635;
+            transform: translateX(4px);
+        }
+
+        .icon {
+            background: #303d20;
+            color: #a3e635;
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            font-size: 22px;
+        }
+
+        .details h3 {
+            margin: 0 0 6px;
+            font-size: 15px;
+        }
+
+        .details p {
+            margin: 0;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .roast-btn {
+            display: none;
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px 20px;
+            background: #a3e635;
+            color: #101010;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 15px;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+
+        .roast-btn:hover {
+            background: #bef264;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>♫ My Music</h1>
+    <p class="subtitle">A little collection of what I listen to.</p>
+    
+    <h2 id="playlist-name" style="color: #a3e635; margin-bottom: 15px;"></h2>
+    <div id="songs">Loading your music...</div>
+
+    <!-- Moved outside <script> and inside .container -->
+    <a href="roast.html" id="roast-btn" class="roast-btn">
+        Send response to the Agent to roast you Choom.
+    </a>
+</div>
+
+<script>
+    fetch("http://localhost:3000/api/songs")
+        .then(res => res.json())
+        .then(songs => {
+            document.getElementById("playlist-name").textContent = songs[0]?.playlist || "My Playlist";
+            const container = document.getElementById("songs");
+
+            container.innerHTML = "";
+
+            songs.forEach(song => {
+                container.innerHTML += `
+                    <div class="song">
+                        <div class="icon">♪</div>
+                        <div class="details">
+                            <h3>${song.title}</h3>
+                            <p>${song.artist}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Reveal the button once songs are displayed
+            document.getElementById("roast-btn").style.display = "block";
+        })
+        .catch(err => {
+            document.getElementById("songs").textContent =
+                "Couldn't load your music.";
+            console.error(err);
+        });
+</script>
+
+</body>
+</html>

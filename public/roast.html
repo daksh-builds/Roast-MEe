@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent.esc — Playlist Roast</title>
+    <!-- 1. Add Marked.js CDN to convert Markdown to HTML -->
+    <script>
+    function formatMarkdown(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // **bold** -> <strong>
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')             // *italic* -> <em>
+            .replace(/^- (.*)$/gm, '<li>$1</li>')             // - bullet -> <li>
+            .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')       // Wrap bullets in <ul>
+            .replace(/\n\n/g, '<br><br>');                    // Paragraph spacing
+    }
+
+    fetch("http://localhost:3000/api/roast")
+        .then(res => res.json())
+        .then(roast => {
+            document.getElementById("ai-response").innerHTML = formatMarkdown(roast);
+        })
+        .catch(err => {
+            document.getElementById("ai-response").textContent = "Agent disconnected. Check your server.";
+            console.error(err);
+        });
+</script>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 50px 20px;
+            background: #101010;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: #1c1c1c;
+            border: 1px solid #292929;
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border: 1px solid #a3e635;
+            background: #303d20;
+            color: #a3e635;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        #ai-response {
+            background: #141414;
+            border: 1px solid #292929;
+            border-radius: 10px;
+            padding: 22px;
+            min-height: 160px;
+            line-height: 1.65;
+            font-size: 15px;
+            color: #e5e5e5;
+            margin-bottom: 20px;
+        }
+
+        /* 2. Style the parsed Markdown elements */
+        #ai-response p {
+            margin: 0 0 14px;
+        }
+
+        #ai-response p:last-child {
+            margin-bottom: 0;
+        }
+
+        #ai-response ul {
+            margin: 12px 0;
+            padding-left: 20px;
+        }
+
+        #ai-response li {
+            margin-bottom: 12px;
+        }
+
+        #ai-response li::marker {
+            color: #a3e635;
+        }
+
+        #ai-response strong {
+            color: #a3e635; /* Highlights artist & song names in lime green */
+        }
+
+        #ai-response em {
+            color: #bbb;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .return-btn {
+            padding: 10px 24px;
+            background: transparent;
+            color: #fff;
+            border: 1px solid #555;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .return-btn:hover {
+            border-color: #a3e635;
+            color: #a3e635;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="badge">Agent.esc</div>
+    <div id="ai-response">Scanning your playlist neural net, Choom...</div>
+    <div class="footer">
+        <button class="return-btn" onclick="window.location.href='/'">Return</button>
+    </div>
+</div>
+
+<script>
+    fetch("http://localhost:3000/api/roast")
+        .then(res => res.json())
+        .then(roast => {
+            // 3. Render Markdown as formatted HTML instead of plain text
+            document.getElementById("ai-response").innerHTML = marked.parse(roast);
+        })
+        .catch(err => {
+            document.getElementById("ai-response").textContent = "Agent disconnected. Check your server.";
+            console.error(err);
+        });
+</script>
+
+</body>
+</html>
